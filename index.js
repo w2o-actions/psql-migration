@@ -1,42 +1,45 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
-const { Pool } = require('pg')
-const pool1 = new Pool();
-const pool2 = new Pool();
+const util = require('util');
+const db = require('./db')
+const readFile = util.promisify(fs.readFile);
 
-try{
-    fs.readFile(process.env.SCHEMA_SCRIPT, 'utf8', function(err, data) {
-        if (err) throw err;
-        const query = data;
-        console.log("here is the query \n", query);
-
-        pool1.query(query, (err, res) => {
-            core.setOutput("psql", res);
-            pool1.end()
-      });
-    });
+async function migrate(query) {
+    try {
+        const res = await db.query(query);
+        return res;
+    }
+    catch (error) {
+        console.log(error);
+        core.setOutput(error.message, "schema");
+    }
 }
-catch(error){
-    core.setOutput("psql", error.message);
+
+async function read(filename) {
+    return readFile(filename, 'utf8');
+}
+
+
+try {
+    read(process.env.SCHEMA_SCRIPT).then(async function (data) {
+        await new Promise(resolve => resolve(migrate(data).then(async function (response) {
+
+            core.setOutput(response, "schema");
+
+            await new Promise(resolve =>
+                resolve(read(process.env.SEED_SCRIPT).then(async function (data) {
+
+                    await new Promise(resolve => resolve(migrate(data).then(async function (response) {
+                        core.setOutput(response, "seed");
+                    })))
+                }))
+            )
+
+        })))
+    });
+
+}
+catch (error) {
     core.setFailed(error.message);
 }
-
-
-try{
-    fs.readFile(process.env.SEED_SCRIPT, 'utf8', function(err, data) {
-        if (err) throw err;
-        const query = data;
-        console.log("here is the query \n", query);
-
-        pool2.query(query, (err, res) => {
-            core.setOutput("psql", res);
-            pool2.end()
-      });
-    });
-}
-catch(error){
-    core.setOutput("psql", error.message);
-    core.setFailed(error.message);
-}
-

@@ -27,8 +27,10 @@ inputs:
     description: 'the SEED migration script'
     required: true    
 outputs:
-  psql: # id of output
+  schema: # id of output
     description: 'The output from your script'
+  seed: # id of output
+    description: 'The output from your script'    
 runs:
   using: 'node12'
   main: 'index.js'
