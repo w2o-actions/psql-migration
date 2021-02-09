@@ -22,20 +22,20 @@ catch(error){
 }
 
 
-try{
-    fs.readFile(process.env.SEED_SCRIPT, 'utf8', function(err, data) {
-        if (err) throw err;
-        const query = data;
-        console.log("here is the query \n", query);
+// try{
+//     fs.readFile(process.env.SEED_SCRIPT, 'utf8', function(err, data) {
+//         if (err) throw err;
+//         const query = data;
+//         console.log("here is the query \n", query);
 
-        pool.query(query, (err, res) => {
-            core.setOutput("psql", res);
-            pool.end()
-      });
-    });
-}
-catch(error){
-    core.setOutput("psql", error.message);
-    core.setFailed(error.message);
-}
+//         pool.query(query, (err, res) => {
+//             core.setOutput("psql", res);
+//             pool.end()
+//       });
+//     });
+// }
+// catch(error){
+//     core.setOutput("psql", error.message);
+//     core.setFailed(error.message);
+// }
 
