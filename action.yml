@@ -20,9 +20,12 @@ inputs:
     description: 'port for psql'
     required: true
     default: 5432
-  SCRIPT:
-    description: 'the migration script'
+  SCHEMA_SCRIPT:
+    description: 'the SCHEMA migration script'
     required: true
+  SEED_SCRIPT:
+    description: 'the SEED migration script'
+    required: true    
 outputs:
   psql: # id of output
     description: 'The output from your script'

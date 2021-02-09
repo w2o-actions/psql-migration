@@ -5,29 +5,37 @@ const { Pool } = require('pg')
 const pool = new Pool();
 
 try{
-    fs.readFile(process.env.SCRIPT, 'utf8', function(err, data) {
+    fs.readFile(process.env.SCHEMA_SCRIPT, 'utf8', function(err, data) {
         if (err) throw err;
         const query = data;
         console.log("here is the query \n", query);
 
         pool.query(query, (err, res) => {
-            core.setOutput("psql", JSON.stringify(res));
+            core.setOutput("psql", res);
             pool.end()
       });
     });
 }
 catch(error){
-    core.setOutput("psql", error);
+    core.setOutput("psql", error.message);
     core.setFailed(error.message);
 }
 
 
+try{
+    fs.readFile(process.env.SEED_SCRIPT, 'utf8', function(err, data) {
+        if (err) throw err;
+        const query = data;
+        console.log("here is the query \n", query);
 
-// TOOD:
-
-
-// Accept multiple files
-
-// Schemas always run first
-
+        pool.query(query, (err, res) => {
+            core.setOutput("psql", res);
+            pool.end()
+      });
+    });
+}
+catch(error){
+    core.setOutput("psql", error.message);
+    core.setFailed(error.message);
+}
 
