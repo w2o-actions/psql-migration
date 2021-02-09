@@ -1,0 +1,31 @@
+name: 'PSQL migrations'
+description: 'Run PSQL'
+inputs:
+  PGHOST:
+    description: 'Host'
+    required: true
+    default: 'localhost'
+  PGUSER:
+      description: 'Host'
+      required: true
+      default: 'administrator'  
+  PGPASSWORD:
+    description: 'psql password'
+    required: true
+    default: 'password'
+  PGDATABASE:
+    description: 'database name'
+    required: true
+  PGPORT: 
+    description: 'port for psql'
+    required: true
+    default: 5432
+  SCRIPT:
+    description: 'the migration script'
+    required: true
+outputs:
+  psql: # id of output
+    description: 'The output from your script'
+runs:
+  using: 'node12'
+  main: 'index.js'

@@ -1,0 +1,13 @@
+## PSQL Migration Action
+
+## Inputs
+
+        env:
+          PGUSER: admin...
+          PGHOST: database.name...
+          PGPASSWORD: password...
+          PGDATABASE: db...
+          PGPORT: 5432
+          SCRIPT: "select * from ..."
+
+
