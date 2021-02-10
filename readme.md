@@ -8,6 +8,10 @@
           PGPASSWORD: password...
           PGDATABASE: db...
           PGPORT: 5432
-          SCRIPT: "select * from ..."
+          SCHEMA_SCRIPT: "select * from ..."
+          SEED_SCRIPT: "select * from ..."
 
+
+Suggested:
+- inputs are secret.. ${{ secret.... }}
 
