@@ -23,3 +23,10 @@ GitHub "Environments"
 - Set environment in action for each respectively
 - Let dynamic secrets do their thing
 
+
+Schema 
+- Schema is expected to be in `project_root/migrations/schema/schema.sql`
+
+
+Seed
+- Seed is expected to be in `project_root/migrations/seed/seed.sql`
