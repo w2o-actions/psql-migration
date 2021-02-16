@@ -18,7 +18,7 @@ async function migrate(query) {
         return res;
     }
     catch (error) {
-        core.setFailed(error.message, "schema");
+        core.setFailed("schema",error.message);
     }
 }
 
@@ -28,22 +28,33 @@ async function read(filename) {
 
 
 try {
-    read(schema_script).then(async function (data) {
-        await new Promise(resolve => resolve(migrate(data).then(async function (response) {
+    if(schema_script){
+        read(schema_script).then(async function (data) {
+            await new Promise(resolve => resolve(migrate(data).then(async function (response) {
+    
+                core.setOutput("schema", response);
+                if(seed_script){
+                    await new Promise(resolve =>
+                        resolve(read(seed_script).then(async function (data) {
+        
+                            await new Promise(resolve => resolve(migrate(data).then(async function (response) {
+                                core.setOutput("seed", response);
+                            })))
+                        }))
+                    )
+                }
+                else{
+                    core.setOutput("seed", "no seed migrations provided");
+                }
 
-            core.setOutput(response, "schema");
-
-            await new Promise(resolve =>
-                resolve(read(seed_script).then(async function (data) {
-
-                    await new Promise(resolve => resolve(migrate(data).then(async function (response) {
-                        core.setOutput(response, "seed");
-                    })))
-                }))
-            )
-
-        })))
-    });
+    
+            })))
+        });
+    }
+    else{
+        core.setOutput("schema", "no schema migrations provided");
+    }
+    
 
 }
 catch (error) {
